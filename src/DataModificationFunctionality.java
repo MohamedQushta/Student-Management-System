@@ -37,6 +37,11 @@ public class DataModificationFunctionality implements Runnable{
                     }
                 }
             }
+            try {
+                FileHandler.updateAllData();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
     public static void stop()

@@ -12,6 +12,7 @@ public class SemesterTimelineFunctionality implements Runnable {
     }
     @Override
     public void run() {
+
         System.out.println("Semester " + currentSemester + " has now been started");
         while (currentWeek <= 4) {
             System.out.println("Week " + currentWeek + " has just started");

@@ -84,7 +84,7 @@ public class StudentOptions {
                     }
                     courseToBeAdded.addStudent(currStudent.email);
                     currStudent.setCurrCreditHrs(currStudent.getCurrCreditHrs() + courseToBeAdded.getCreditHrs());
-                    if(currStudent.getCurrCreditHrs() >= 9)
+                    if(currStudent.getCurrCreditHrs() >= 3)
                         currStudent.setReadyForSemester(true);
                     currStudent.setTotalCreditHrs(currStudent.getTotalCreditHrs() + courseToBeAdded.getCreditHrs());
                     System.out.println("Course: " + courseToBeAdded.getName() +  " has been added successfully to this student");
