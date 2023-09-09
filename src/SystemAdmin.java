@@ -296,7 +296,8 @@ public class SystemAdmin extends User implements Serializable {
     {
         Student currStudent = (Student) Engine.allUsers.get(studentEmail);
         List<Course> availableCourses = Engine.allCourses.values().stream().
-                filter(course -> !currStudent.currCourses.containsKey(course.getId())).toList();
+                filter(course -> !currStudent.currCourses.containsKey(course.getId()) && course.getCurrTeacher()!=null)
+                .toList();
         if(availableCourses.isEmpty())
         {
             System.out.println("There are no available courses for this student now");

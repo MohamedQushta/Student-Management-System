@@ -60,11 +60,6 @@ public class StudentOptions {
         if(Engine.allCourses.containsKey(courseId)) //Check if the course exists
         {
             Course courseToBeAdded = Engine.allCourses.get(courseId);
-            if(courseToBeAdded.getCurrTeacher() == null)
-            {
-                System.out.println("This Course has no teacher available yet");
-                return;
-            }
             if(courseToBeAdded.getCurrStudentsNum() + 1 > courseToBeAdded.getMaxStudents())
             {
                 System.out.println("Sorry, this course is full");
@@ -201,7 +196,7 @@ public class StudentOptions {
             currStudent.allCourses.put(entry.getKey(), gradeToBePut);
         }
     }
-    
+
     void showStudentInfo(String studentEmail)
     {
         Student currStudent = (Student) Engine.allUsers.get(studentEmail);
