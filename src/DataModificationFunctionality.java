@@ -3,6 +3,7 @@ import java.io.IOException;
 public class DataModificationFunctionality implements Runnable{
     private static boolean exit;
     Thread thread;
+    StudentOptions studentOptions = new StudentOptions();
     DataModificationFunctionality()
     {
         thread = new Thread(this);

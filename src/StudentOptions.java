@@ -60,15 +60,26 @@ public class StudentOptions {
         if(Engine.allCourses.containsKey(courseId)) //Check if the course exists
         {
             Course courseToBeAdded = Engine.allCourses.get(courseId);
+            if(courseToBeAdded.getCurrTeacher() == null)
+            {
+                System.out.println("This Course has no teacher available yet");
+                return;
+            }
             if(courseToBeAdded.getCurrStudentsNum() + 1 > courseToBeAdded.getMaxStudents())
             {
                 System.out.println("Sorry, this course is full");
+                return;
+            }
+            if(currStudent.allCourses.containsKey(courseId) && !currStudent.allCourses.get(courseId).equals('F'))
+            {
+                System.out.println("Student: " + currStudent.getName() + " has already taken this course and passed it");
                 return;
             }
             if(currStudent.getCurrCourses().containsKey(courseId)) //Check if the student already has this course added
             {
                 System.out.println("Student: " + currStudent.getName() + " already has this course registered");
             }
+
             else
             {
                 double courseCost = courseToBeAdded.getCreditHrs() * SystemAdmin.crHrCost;
@@ -190,38 +201,7 @@ public class StudentOptions {
             currStudent.allCourses.put(entry.getKey(), gradeToBePut);
         }
     }
-
-    public void handleRefundedStudents() {
-        List<User> allStudents = Engine.allUsers.values().stream().
-                filter((user -> user.userType == UserType.STUDENT)).toList();
-        for(User currStudent : allStudents)
-        {
-            if(!((Student) currStudent).getReadyForSemester())
-            {
-                refundAllCourses(currStudent.getEmail());
-            }
-        }
-        List<Course> allCoursesWithStudents = Engine.allCourses.values().stream().
-                filter((course -> course.getCurrStudentsNum()>=1)).toList();
-        for(Course currCourse : allCoursesWithStudents)
-        {
-            if(currCourse.getCurrTeacher() == null)
-            {
-                currCourse.refundAllStudents();
-            }
-        }
-    }
-    void refundAllCourses(String studentEmail)
-    {
-        Student currStudent = (Student) Engine.allUsers.get(studentEmail);
-        if(!currStudent.currCourses.isEmpty())
-        {
-            for(String courseId : currStudent.currCourses.keySet())
-            {
-                refundCourse(courseId, studentEmail);
-            }
-        }
-    }
+    
     void showStudentInfo(String studentEmail)
     {
         Student currStudent = (Student) Engine.allUsers.get(studentEmail);

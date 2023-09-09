@@ -21,7 +21,7 @@ public class Engine implements Serializable{
 
             dataModificationThread.start();
             dataModificationThread.join();
-            studentOptions.handleRefundedStudents();
+
             SemesterTimelineFunctionality semesterTimelineFunctionality = new SemesterTimelineFunctionality(currentSemester);
             Thread semesterTimelineThread = new Thread(semesterTimelineFunctionality);
             SemesterTimelineFunctionality.isRunning = true;
