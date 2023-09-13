@@ -3,7 +3,7 @@ import java.io.IOException;
 public class DataModificationFunctionality implements Runnable{
     private static boolean exit;
     Thread thread;
-    StudentOptions studentOptions = new StudentOptions();
+    StudentOptions studentOptions =StudentOptions.getOnlyInstance();
     DataModificationFunctionality()
     {
         thread = new Thread(this);
@@ -32,7 +32,7 @@ public class DataModificationFunctionality implements Runnable{
                         System.out.println("You have signed in and these are your options:");
                         switch (currUser.userType) {
                             case STUDENT -> StudentOptions.studentOptions((Student) currUser);
-                            case TEACHER -> Engine.teacherOptions((Teacher) currUser);
+                            case TEACHER -> TeacherOptions.teacherOptions((Teacher) currUser);
                             case SYSTEMADMIN -> Engine.systemAdminOptions((SystemAdmin) currUser);
                         }
                     }

@@ -4,7 +4,7 @@ public class SemesterTimelineFunctionality implements Runnable {
     private final int currentSemester;
     private int currentWeek;
     Thread dataModificationThread;
-    static boolean isRunning;
+    public static boolean isRunning;
     SemesterTimelineFunctionality(int currentSemester)
     {
         this.currentSemester = currentSemester;

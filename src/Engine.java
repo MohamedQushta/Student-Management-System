@@ -8,7 +8,7 @@ public class Engine implements Serializable{
     public static HashMap<String, Course> allCourses = new HashMap<>();
     public static HashMap<String, User> allUsers = new HashMap<>();
     public static ArrayList<Request> pendingRequests = new ArrayList<>();
-    StudentOptions studentOptions = new StudentOptions();
+    StudentOptions studentOptions =  StudentOptions.getOnlyInstance();
     public static final Scanner in = new Scanner(System.in);
     public void go() throws IOException, InterruptedException {
         FileHandler.loadAllData();
@@ -56,28 +56,7 @@ public class Engine implements Serializable{
         } while (answer.equals("y"));
     }
 
-    static void teacherOptions(Teacher currTeacher) {
-        String answer;
-        do {
-            System.out.println("1: Get assigned to a course");
-            System.out.println("2: View available courses");
-            System.out.println("3: Withdraw course");
-            System.out.println("4: View registered students");
-            System.out.println("5: View current courses");
-            System.out.println("6: Back to Sign in/ Sign Up");
-            int choice = InputHandler.promptNumericInput(1,6);
-            if(choice == 6 ) break;
-            switch (choice) {
-                case 1 -> currTeacher.addCourse();
-                case 2 -> currTeacher.viewAvailableCourses();
-                case 3 -> currTeacher.withdrawCourse();
-                case 4 -> currTeacher.viewRegisteredStudents();
-                case 5 -> currTeacher.viewCurrCourses();
-            }
-            System.out.println("Do you want to do anything else (y/n)");
-            answer = InputHandler.promptBinaryInput();
-        } while (answer.equals("y"));
-    }
+
 
     static void clearSemesterData()
     {

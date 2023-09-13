@@ -4,11 +4,20 @@ import java.util.Map;
 import java.util.Random;
 
 public class StudentOptions {
+    static StudentOptions onlyInstance = new StudentOptions();
+    private StudentOptions()
+    {}
+    public static StudentOptions getOnlyInstance(){
+//            if(onlyInstance == null)
+//                onlyInstance = new StudentOptions();
+        return onlyInstance;
+    }
     Student currStudent;
+    CourseBehaviour courseBehaviour = new StudentCourseBehaviour();
     static Random randomizer = new Random();
     public static final Character[] allGradesAvailable ={'A' , 'B', 'C', 'D', 'F'};
     static void studentOptions(Student student) {
-        StudentOptions studentOptions = new StudentOptions();
+        StudentOptions studentOptions = StudentOptions.getOnlyInstance();
         String answer;
         do {
             System.out.println("1: Register Course");
@@ -25,7 +34,7 @@ public class StudentOptions {
                     String curr;
                     do {
                         System.out.println("These are all the courses available for this student, if you want to add any of them press 1, to exit press 2");
-                        SystemAdmin.showAllCourses(student.getEmail());
+                        studentOptions.showAvailableCourses(student.getEmail());
                         int c = InputHandler.promptNumericInput(1,2);
                         if (c == 1) {
                             System.out.println("Enter Course ID");
@@ -36,7 +45,7 @@ public class StudentOptions {
                                 return;
                             }
                             currCourse = Engine.allCourses.get(id);
-                            studentOptions.registerCourse(currCourse.getId(), student.getEmail());
+                            studentOptions.addCourse(currCourse.getId(), student.getEmail());
                         } else if (c == 2) {
                             break;
                         }
@@ -54,57 +63,9 @@ public class StudentOptions {
             answer = InputHandler.promptBinaryInput();
         } while (answer.equals("y"));
     }
-    public  void registerCourse(String courseId, String studentEmail)
+    public  void addCourse(String courseId, String studentEmail)
     {
-        currStudent = (Student) Engine.allUsers.get(studentEmail);
-        if(Engine.allCourses.containsKey(courseId)) //Check if the course exists
-        {
-            Course courseToBeAdded = Engine.allCourses.get(courseId);
-            if(courseToBeAdded.getCurrStudentsNum() + 1 > courseToBeAdded.getMaxStudents())
-            {
-                System.out.println("Sorry, this course is full");
-                return;
-            }
-            if(currStudent.allCourses.containsKey(courseId) && !currStudent.allCourses.get(courseId).equals('F'))
-            {
-                System.out.println("Student: " + currStudent.getName() + " has already taken this course and passed it");
-                return;
-            }
-            if(currStudent.getCurrCourses().containsKey(courseId)) //Check if the student already has this course added
-            {
-                System.out.println("Student: " + currStudent.getName() + " already has this course registered");
-            }
-
-            else
-            {
-                double courseCost = courseToBeAdded.getCreditHrs() * SystemAdmin.crHrCost;
-                if(currStudent.getBalance() >= courseCost || currStudent.isAided())
-                {
-                    currStudent.currCourses.put(courseId, 'I');
-                    currStudent.allCourses.put(courseId, 'I');
-                    double studentCurrBalance = currStudent.getBalance();
-                    if(!currStudent.isAided())
-                    {
-                        double newBalance = studentCurrBalance - courseCost;
-                        currStudent.setBalance(newBalance);
-                    }
-                    courseToBeAdded.addStudent(currStudent.email);
-                    currStudent.setCurrCreditHrs(currStudent.getCurrCreditHrs() + courseToBeAdded.getCreditHrs());
-                    if(currStudent.getCurrCreditHrs() >= 3)
-                        currStudent.setReadyForSemester(true);
-                    currStudent.setTotalCreditHrs(currStudent.getTotalCreditHrs() + courseToBeAdded.getCreditHrs());
-                    System.out.println("Course: " + courseToBeAdded.getName() +  " has been added successfully to this student");
-                }
-                else
-                {
-                    System.out.println("Student: " + currStudent.getName() + " Has insufficient balance to purchase course " + courseToBeAdded);
-                }
-            }
-        }
-        else
-        {
-            System.out.println("This course ID is not available");
-        }
+        courseBehaviour.addCourse(courseId, studentEmail);
     }
     public void refundCourse(String courseId,String studentEmail)
     {
@@ -115,13 +76,13 @@ public class StudentOptions {
             if(currStudent.currCourses.containsKey(courseId)) //Check if the student is taking this course
             {
                 currStudent.currCourses.remove(courseId);
-                currStudent.balance += courseToBeDeleted.getCreditHrs() * SystemAdmin.crHrCost;
-                currStudent.currCreditHrs -= courseToBeDeleted.getCreditHrs();
-                System.out.println("Student: " + currStudent.name + " has been refunded" );
+                currStudent.setBalance(currStudent.getBalance() + courseToBeDeleted.getCreditHrs() * SystemAdmin.crHrCost); ;
+                currStudent.setCurrCreditHrs(currStudent.getTotalCreditHrs() - courseToBeDeleted.getCreditHrs()); ;
+                System.out.println("Student: " + currStudent.getName() + " has been refunded" );
             }
             else
             {
-                System.out.println("Student: " + currStudent.name + " is not taking this course");
+                System.out.println("Student: " + currStudent.getName() + " is not taking this course");
             }
         }
         else
@@ -184,7 +145,7 @@ public class StudentOptions {
                 filter((user -> user.userType == UserType.STUDENT)).toList();
         for(User currStudent : allStudents)
         {
-            randomizeGrade(currStudent.email);
+            randomizeGrade(currStudent.getEmail());
         }
     }
     public static void randomizeGrade(String studentEmail){
@@ -201,5 +162,9 @@ public class StudentOptions {
     {
         Student currStudent = (Student) Engine.allUsers.get(studentEmail);
         System.out.println(currStudent);
+    }
+    void showAvailableCourses(String studentEmail)
+    {
+        courseBehaviour.showAvailableCourses(studentEmail);
     }
 }

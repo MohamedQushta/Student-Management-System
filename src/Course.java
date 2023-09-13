@@ -89,7 +89,7 @@ public class Course implements Serializable{
                 '}';
     }
     public void refundAllStudents() {
-        StudentOptions studentOptions = new StudentOptions();
+        StudentOptions studentOptions = StudentOptions.getOnlyInstance();
         for(String studentEmail : studentsEmails)
         {
            Student currStudent = (Student) Engine.allUsers.get(studentEmail);

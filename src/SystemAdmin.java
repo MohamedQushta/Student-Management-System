@@ -1,6 +1,5 @@
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -256,8 +255,12 @@ public class SystemAdmin extends User implements Serializable {
                 case 3 -> {
                     System.out.println("What is the new teacher email: ");
                     String newTeacherEmail = Engine.in.nextLine();
+                    Teacher currTeacher = (Teacher) Engine.allUsers.get(newTeacherEmail);
                     if (Engine.allUsers.containsKey(newTeacherEmail))
-                        currentCourse.setCurrTeacher((Teacher) Engine.allUsers.get(newTeacherEmail));
+                    {
+                        TeacherOptions teacherOptions = TeacherOptions.getOnlyInstance();
+                        teacherOptions.addCourse(courseId, newTeacherEmail);
+                    }
                     else
                         System.out.println("There is no teacher with this email");
                 }
@@ -282,34 +285,6 @@ public class SystemAdmin extends User implements Serializable {
         } while (answer.equals("y"));
     }
     //Done
-    public static void showAllCourses()
-    {
-        if(Engine.allCourses.isEmpty())
-        {
-            System.out.println("There are no available courses yet");
-            return;
-        }
-       for (Course course : Engine.allCourses.values())
-           System.out.println(course);
-    }
-    public static void showAllCourses(String studentEmail)
-    {
-        Student currStudent = (Student) Engine.allUsers.get(studentEmail);
-        List<Course> availableCourses = Engine.allCourses.values().stream().
-                filter(course -> !currStudent.currCourses.containsKey(course.getId()) && course.getCurrTeacher()!=null)
-                .toList();
-        if(availableCourses.isEmpty())
-        {
-            System.out.println("There are no available courses for this student now");
-            return;
-        }
-        for (Course course : availableCourses)
-        {
-            System.out.println(course);
-        }
-
-
-    }
 
     @Override
     public String toString() {
