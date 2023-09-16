@@ -2,25 +2,18 @@ import java.util.ArrayList;
 public class TeacherOptions {
     Teacher currTeacher;
     static TeacherOptions onlyInstance = new TeacherOptions();
-    CourseBehaviour courseBehaviour = new TeacherCourseBehaviour();
+    CourseStrategy courseStrategy = new TeacherCourseStrategy();
     private TeacherOptions()
     {}
     public static TeacherOptions getOnlyInstance()
     {
-//        if(onlyInstance == null)
-//            onlyInstance = new TeacherOptions();
         return onlyInstance;
     }
     static void teacherOptions(Teacher currTeacher) {
         TeacherOptions teacherOptions = TeacherOptions.getOnlyInstance();
         String answer;
         do {
-            System.out.println("1: Get assigned to a course");
-            System.out.println("2: View available courses");
-            System.out.println("3: Withdraw course");
-            System.out.println("4: View registered students");
-            System.out.println("5: View current courses");
-            System.out.println("6: Back to Sign in/ Sign Up");
+            displayTeacherOptions();
             int choice = InputHandler.promptNumericInput(1,6);
             if(choice == 6 ) break;
             switch (choice) {
@@ -43,45 +36,24 @@ public class TeacherOptions {
         } while (answer.equals("y"));
     }
 
+    private static void displayTeacherOptions() {
+        System.out.println("1: Get assigned to a course");
+        System.out.println("2: View available courses");
+        System.out.println("3: Withdraw course");
+        System.out.println("4: View registered students");
+        System.out.println("5: View current courses");
+        System.out.println("6: Back to Sign in/ Sign Up");
+    }
+
     public void showAvailableCourses(String teacherEmail)
     {
-        courseBehaviour.showAvailableCourses(teacherEmail);
+        courseStrategy.showAvailableCourses(teacherEmail);
     }
     public void addCourse(String courseId, String teacherEmail) {
-        courseBehaviour.addCourse(courseId, teacherEmail);
+        courseStrategy.addCourse(courseId, teacherEmail);
     }
-    public void withdrawCourse(String courseID, String teacherEmail) {
-        currTeacher = (Teacher) Engine.allUsers.get(teacherEmail);
-        Course courseToBeWithdrawn;
-        if(SemesterTimelineFunctionality.isRunning == true)
-        {
-            System.out.println("Teachers can't withdraw courses while the semester is running");
-            return;
-        }
-        if (Engine.allCourses.containsKey(courseID))
-            courseToBeWithdrawn = Engine.allCourses.get(courseID);
-        else {
-            System.out.println("This course ID is not available");
-            return;
-        }
-        String idToBeWithdrawn = null;
-        for (String currentCourseId : currTeacher.currCourses) {
-            Course currCourse = Engine.allCourses.get(currentCourseId);
-            idToBeWithdrawn = null;
-            if (courseToBeWithdrawn.getId().equals(currCourse.getId())) {
-                idToBeWithdrawn = currCourse.getId();
-            }
-        }
-        if (idToBeWithdrawn != null) {
-            currTeacher.currCourses.remove(idToBeWithdrawn);
-            courseToBeWithdrawn.refundAllStudents();
-            courseToBeWithdrawn.setCurrTeacher(null);
-        }
-        else
-        {
-            System.out.println("This teacher does not teach this course");
-        }
-    }
+    public void withdrawCourse(String teacherEmail, String courseID) {courseStrategy.removeCourse(teacherEmail, courseID);}
+    public void viewCurrCourses(String teacherEmail)  {courseStrategy.viewCurrCourses(teacherEmail);}
     public void viewRegisteredStudents(String teacherEmail)
     {
         currTeacher = (Teacher) Engine.allUsers.get(teacherEmail);
@@ -107,15 +79,5 @@ public class TeacherOptions {
             }
         }
     }
-    public void viewCurrCourses(String teacherEmail)
-    {
-        currTeacher = (Teacher) Engine.allUsers.get(teacherEmail);
-        if(currTeacher.currCourses.isEmpty())
-            System.out.println("This teacher does not teach any course");
-        for(String c : currTeacher.currCourses)
-        {
-            Course currCourse = Engine.allCourses.get(c);
-            System.out.println(currCourse);
-        }
-    }
+
 }

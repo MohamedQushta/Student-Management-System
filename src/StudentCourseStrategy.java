@@ -1,6 +1,6 @@
 import java.util.List;
 
-public class StudentCourseBehaviour implements CourseBehaviour {
+public class StudentCourseStrategy implements CourseStrategy {
 
     @Override
     public void addCourse(String courseId, String studentEmail) {
@@ -70,5 +70,46 @@ public class StudentCourseBehaviour implements CourseBehaviour {
         {
             System.out.println(course);
         }
+    }
+
+    @Override
+    public void removeCourse(String studentEmail, String courseId) {
+        Student currStudent = (Student) Engine.allUsers.get(studentEmail);
+        if(Engine.allCourses.containsKey(courseId)) //Check if the course exists
+        {
+            Course courseToBeDeleted = Engine.allCourses.get(courseId);
+            if(currStudent.currCourses.containsKey(courseId)) //Check if the student is taking this course
+            {
+                currStudent.currCourses.remove(courseId);
+                currStudent.setBalance(currStudent.getBalance() + courseToBeDeleted.getCreditHrs() * SystemAdmin.crHrCost); ;
+                currStudent.setCurrCreditHrs(currStudent.getTotalCreditHrs() - courseToBeDeleted.getCreditHrs()); ;
+                System.out.println("Student: " + currStudent.getName() + " has been refunded" );
+            }
+            else
+            {
+                System.out.println("Student: " + currStudent.getName() + " is not taking this course");
+            }
+        }
+        else
+        {
+            System.out.println("course ID: " + courseId +  " is not available");
+        }
+
+    }
+
+    @Override
+    public void viewCurrCourses(String studentEmail) {
+        Student currStudent = (Student) Engine.allUsers.get(studentEmail);
+        if(!currStudent.currCourses.isEmpty())
+        {
+            for(String courseId :currStudent.currCourses.keySet())
+            {
+                Course currCourse = Engine.allCourses.get(courseId);
+                System.out.println(currCourse);
+            }
+        }
+        else
+            System.out.println("Student: " + currStudent.getName() + " has no courses for this semester yet");
+
     }
 }

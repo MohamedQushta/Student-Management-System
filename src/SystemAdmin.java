@@ -6,7 +6,7 @@ import java.util.Objects;
 public class SystemAdmin extends User implements Serializable {
     @Serial
     private static final long serialVersionUID = -8975606175870630255L;
-    public static double crHrCost;
+    public static double crHrCost = 5;
 
     public SystemAdmin() {
         super();
@@ -104,11 +104,7 @@ public class SystemAdmin extends User implements Serializable {
     {
         String answer;
         do {
-            System.out.println("Whose info do you want to modify");
-            System.out.println("1: Student");
-            System.out.println("2: Teacher");
-            System.out.println("3: Course");
-            System.out.println("4: Exit");
+            subjectsOfModification();
             int choice = InputHandler.promptNumericInput(1,4);
             if(choice == 4)
                 break;
@@ -121,7 +117,6 @@ public class SystemAdmin extends User implements Serializable {
             answer = InputHandler.promptBinaryInput();
         } while (answer.equals("y"));
     }
-    //Done
     private void modifyStudentInfo()
     {
         System.out.println("Enter the user's email");
@@ -135,12 +130,7 @@ public class SystemAdmin extends User implements Serializable {
         System.out.println(currStudent);
         String answer;
         do {
-            System.out.println("What info do you want to change");
-            System.out.println("1: Name");
-            System.out.println("2: Password");
-            System.out.println("3: Email");
-            System.out.println("4: Balance");
-            System.out.println("5: Exit");
+            studentModificationCriteria();
             int choice = InputHandler.promptNumericInput(1,5);
             if(choice == 5)
                 break;
@@ -171,7 +161,6 @@ public class SystemAdmin extends User implements Serializable {
             answer = InputHandler.promptBinaryInput();
         }while(!Objects.equals(answer, "n"));
     }
-    //Done
     private void modifyTeacherInfo() {
         System.out.println("Enter the teacher's email");
         String email = Engine.in.nextLine();
@@ -183,12 +172,7 @@ public class SystemAdmin extends User implements Serializable {
         System.out.println(currTeacher);
         String answer;
         do{
-            System.out.println("What info do you want to change");
-            System.out.println("1: Name");
-            System.out.println("2: Password");
-            System.out.println("3: Email");
-            System.out.println("4: Specialization");
-            System.out.println("5: Exit");
+            teacherModificationCriteria();
             int currChoice = InputHandler.promptNumericInput(1,5);
             if(currChoice == 5)
                 break;
@@ -218,7 +202,7 @@ public class SystemAdmin extends User implements Serializable {
             answer = InputHandler.promptBinaryInput();
         }while(!answer.equals("n"));
     }
-    //Done
+
     private void modifyCourseInfo()
     {
         System.out.println("Enter the course ID");
@@ -231,14 +215,7 @@ public class SystemAdmin extends User implements Serializable {
         Course currentCourse = Engine.allCourses.get(courseId);
         String answer;
         do {
-            System.out.println("What is the info you want to change");
-            System.out.println("1: Course Name");
-            System.out.println("2: Course ID");
-            System.out.println("3: Course current teacher");
-            System.out.println("4: Course credit hours");
-            System.out.println("5: Course max students");
-            System.out.println("6: Course specialization");
-            System.out.println("7: Exit");
+            courseModificationCriteria();
             int choice  = InputHandler.promptNumericInput(1,7);
             if(choice == 7) break;
             switch (choice) {
@@ -255,7 +232,6 @@ public class SystemAdmin extends User implements Serializable {
                 case 3 -> {
                     System.out.println("What is the new teacher email: ");
                     String newTeacherEmail = Engine.in.nextLine();
-                    Teacher currTeacher = (Teacher) Engine.allUsers.get(newTeacherEmail);
                     if (Engine.allUsers.containsKey(newTeacherEmail))
                     {
                         TeacherOptions teacherOptions = TeacherOptions.getOnlyInstance();
@@ -284,8 +260,39 @@ public class SystemAdmin extends User implements Serializable {
             answer = InputHandler.promptBinaryInput();
         } while (answer.equals("y"));
     }
-    //Done
-
+    private void studentModificationCriteria() {
+        System.out.println("What info do you want to change");
+        System.out.println("1: Name");
+        System.out.println("2: Password");
+        System.out.println("3: Email");
+        System.out.println("4: Balance");
+        System.out.println("5: Exit");
+    }
+    private void teacherModificationCriteria() {
+        System.out.println("What info do you want to change");
+        System.out.println("1: Name");
+        System.out.println("2: Password");
+        System.out.println("3: Email");
+        System.out.println("4: Specialization");
+        System.out.println("5: Exit");
+    }
+    private  void subjectsOfModification() {
+        System.out.println("Whose info do you want to modify");
+        System.out.println("1: Student");
+        System.out.println("2: Teacher");
+        System.out.println("3: Course");
+        System.out.println("4: Exit");
+    }
+    private  void courseModificationCriteria() {
+        System.out.println("What is the info you want to change");
+        System.out.println("1: Course Name");
+        System.out.println("2: Course ID");
+        System.out.println("3: Course current teacher");
+        System.out.println("4: Course credit hours");
+        System.out.println("5: Course max students");
+        System.out.println("6: Course specialization");
+        System.out.println("7: Exit");
+    }
     @Override
     public String toString() {
         return "SystemAdmin{" +

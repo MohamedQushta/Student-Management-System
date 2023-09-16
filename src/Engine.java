@@ -14,32 +14,34 @@ public class Engine implements Serializable{
         FileHandler.loadAllData();
         int currentSemester = 1;
         while(currentSemester <= 4) {
-            System.out.println("Welcome to semester " + currentSemester);
-
-            DataModificationFunctionality dataModificationFunctionality = new DataModificationFunctionality();
-            Thread dataModificationThread = new Thread(dataModificationFunctionality, "Data modification thread");
-
-            dataModificationThread.start();
-            dataModificationThread.join();
-
-            SemesterTimelineFunctionality semesterTimelineFunctionality = new SemesterTimelineFunctionality(currentSemester);
-            Thread semesterTimelineThread = new Thread(semesterTimelineFunctionality);
-            SemesterTimelineFunctionality.isRunning = true;
-            semesterTimelineThread.start();
-            semesterTimelineThread.join();
-            SemesterTimelineFunctionality.isRunning = false;
+            handlingSemesterTimeline(currentSemester);
             currentSemester++;
         }
         System.out.println("Academic year has now been finished");
     }
+
+    private  void handlingSemesterTimeline(int currentSemester) throws InterruptedException {
+        System.out.println("Welcome to semester " + currentSemester);
+
+        DataModificationFunctionality dataModificationFunctionality = new DataModificationFunctionality();
+        Thread dataModificationThread = new Thread(dataModificationFunctionality, "Data modification thread");
+
+        dataModificationThread.start();
+        dataModificationThread.join();
+
+        SemesterTimelineFunctionality semesterTimelineFunctionality = new SemesterTimelineFunctionality(currentSemester);
+        Thread semesterTimelineThread = new Thread(semesterTimelineFunctionality);
+
+        SemesterTimelineFunctionality.isRunning = true;
+        semesterTimelineThread.start();
+        semesterTimelineThread.join();
+        SemesterTimelineFunctionality.isRunning = false;
+    }
+
     static void systemAdminOptions(SystemAdmin currUser){
         String answer;
         do {
-            System.out.println("1: Add a new Course");
-            System.out.println("2: Show and process requests");
-            System.out.println("3: Modify info");
-            System.out.println("4: Back to Sign in/ Sign Up");
-            System.out.println("5: Start/Continue the semester");
+            displayingSystemAdminOptions();
             int choice = InputHandler.promptNumericInput(1,5);
             if(choice == 4) break;
             switch (choice) {
@@ -56,6 +58,13 @@ public class Engine implements Serializable{
         } while (answer.equals("y"));
     }
 
+    private static void displayingSystemAdminOptions() {
+        System.out.println("1: Add a new Course");
+        System.out.println("2: Show and process requests");
+        System.out.println("3: Modify info");
+        System.out.println("4: Back to Sign in/ Sign Up");
+        System.out.println("5: Start/Continue the semester");
+    }
 
 
     static void clearSemesterData()

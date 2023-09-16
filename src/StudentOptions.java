@@ -8,25 +8,17 @@ public class StudentOptions {
     private StudentOptions()
     {}
     public static StudentOptions getOnlyInstance(){
-//            if(onlyInstance == null)
-//                onlyInstance = new StudentOptions();
         return onlyInstance;
     }
     Student currStudent;
-    CourseBehaviour courseBehaviour = new StudentCourseBehaviour();
+    CourseStrategy courseStrategy = new StudentCourseStrategy();
     static Random randomizer = new Random();
     public static final Character[] allGradesAvailable ={'A' , 'B', 'C', 'D', 'F'};
     static void studentOptions(Student student) {
         StudentOptions studentOptions = StudentOptions.getOnlyInstance();
         String answer;
         do {
-            System.out.println("1: Register Course");
-            System.out.println("2: Show Courses");
-            System.out.println("3: Show Grades of current semester");
-            System.out.println("4: Show Grades of past semesters");
-            System.out.println("5: Request Financial Aid");
-            System.out.println("6: Show Information");
-            System.out.println("7: Back to Sign in/ Sign Up");
+            displayStudentOptions();
             int choice = InputHandler.promptNumericInput(1,7);
             if(choice == 7) break;
             switch (choice) {
@@ -63,47 +55,20 @@ public class StudentOptions {
             answer = InputHandler.promptBinaryInput();
         } while (answer.equals("y"));
     }
+
     public  void addCourse(String courseId, String studentEmail)
     {
-        courseBehaviour.addCourse(courseId, studentEmail);
+        courseStrategy.addCourse(courseId, studentEmail);
     }
-    public void refundCourse(String courseId,String studentEmail)
-    {
-        currStudent = (Student) Engine.allUsers.get(studentEmail);
-        if(Engine.allCourses.containsKey(courseId)) //Check if the course exists
-        {
-            Course courseToBeDeleted = Engine.allCourses.get(courseId);
-            if(currStudent.currCourses.containsKey(courseId)) //Check if the student is taking this course
-            {
-                currStudent.currCourses.remove(courseId);
-                currStudent.setBalance(currStudent.getBalance() + courseToBeDeleted.getCreditHrs() * SystemAdmin.crHrCost); ;
-                currStudent.setCurrCreditHrs(currStudent.getTotalCreditHrs() - courseToBeDeleted.getCreditHrs()); ;
-                System.out.println("Student: " + currStudent.getName() + " has been refunded" );
-            }
-            else
-            {
-                System.out.println("Student: " + currStudent.getName() + " is not taking this course");
-            }
-        }
-        else
-        {
-            System.out.println("course ID: " + courseId +  " is not available");
-        }
-    }
+    public void refundCourse(String studentEmail,String courseId) { courseStrategy.removeCourse(studentEmail, courseId); }
 
     public void showCurrCourses(String studentEmail)
     {
-        currStudent = (Student) Engine.allUsers.get(studentEmail);
-        if(!currStudent.currCourses.isEmpty())
-        {
-            for(String courseId :currStudent.currCourses.keySet())
-            {
-                Course currCourse = Engine.allCourses.get(courseId);
-                System.out.println(currCourse);
-            }
-        }
-        else
-            System.out.println("Student: " + currStudent.getName() + " has no courses for this semester yet");
+        courseStrategy.viewCurrCourses(studentEmail);
+    }
+    void showAvailableCourses(String studentEmail)
+    {
+        courseStrategy.showAvailableCourses(studentEmail);
     }
 
     public void showGrades(String studentEmail) {
@@ -163,8 +128,14 @@ public class StudentOptions {
         Student currStudent = (Student) Engine.allUsers.get(studentEmail);
         System.out.println(currStudent);
     }
-    void showAvailableCourses(String studentEmail)
-    {
-        courseBehaviour.showAvailableCourses(studentEmail);
+    private static void displayStudentOptions() {
+        System.out.println("1: Register Course");
+        System.out.println("2: Show Courses");
+        System.out.println("3: Show Grades of current semester");
+        System.out.println("4: Show Grades of past semesters");
+        System.out.println("5: Request Financial Aid");
+        System.out.println("6: Show Information");
+        System.out.println("7: Back to Sign in/ Sign Up");
     }
+
 }

@@ -1,10 +1,6 @@
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Stream;
-
 public class Teacher extends User implements Serializable {
     @Serial
     private static final long serialVersionUID = -8975606175870630255L;
@@ -14,15 +10,7 @@ public class Teacher extends User implements Serializable {
     public Teacher() {
         super();
         isProcessed = false;
-//        currCourses = new ArrayList<>();
     }
-    //DONE
-
-
-    //Done
-
-    //Done
-
 
     @Override
     public String toString() {
